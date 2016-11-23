@@ -5,9 +5,12 @@
          version="3.1">
 
 	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:spring/application-context.xml</param-value>
-	</context-param>
+		 <param-name>contextConfigLocation</param-name> 
+		 <param-value>classpath:spring/application-context.xml</param-value>
+	</context-param> 
+	<listener> 
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> 
+    </listener> 
       <!--配置DispatcherServlet-->
     <servlet>
         <servlet-name>seckill-dispatcher</servlet-name>

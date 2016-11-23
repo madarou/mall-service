@@ -43,11 +43,11 @@
         <!--注入SqlSessionFactory-->
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         <!-- 给出需要扫描的Dao接口-->
-        <property name="basePackage" value="org.seckill.dao"/>
+        <property name="basePackage" value="com.makao.dao"/>
     </bean>
 
     <!--RedisDao-->
-    <bean id="redisDao" class="org.seckill.dao.cache.RedisDao">
+    <bean id="redisDao" class="com.makao.dao.cache.RedisDao">
         <constructor-arg index="0" value="localhost"/>
         <constructor-arg index="1" value="6379"/>
     </bean>

@@ -20,7 +20,7 @@ import com.makao.service.SeckillService;
  * @author ZYR
  * dubbo接口实现
  */
-@Service("seckillFacade")
+@Service
 public class SeckillFacadeImpl implements SeckillFacade {
 	private Log LOG = LogFactory.getLog(this.getClass());
 
