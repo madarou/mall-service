@@ -1,10 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.makao</groupId>
+  <parent>
+		<groupId>com.makao</groupId>
+		<artifactId>mall-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../mall-parent</relativePath>
+  </parent>
   <artifactId>mall-service</artifactId>
-  <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
+<!--   <packaging>war</packaging> -->
+<!--   dubbo服务可以打包成war放到web容器中，也可打成jar包用dubbo提冲的main类运行 -->
+  <packaging>jar</packaging>
   <name>mall-service Maven Webapp</name>
   <url>http://maven.apache.org</url>
   
@@ -14,12 +20,6 @@
     </properties>
     
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
     
     <dependency>
       <groupId>com.makao</groupId>
@@ -260,6 +260,15 @@
                 <!--filtering: 是否替换资源中的属性placehold-->
                 <filtering>true</filtering>
             </resource>
+			<!--1/2:要使用com.alibaba.dubbo.container.Main来作为服务的容器，需要以下配置 -->
+            <resource>
+            	<targetPath>${project.build.directory}/classes/META-INF/spring</targetPath>
+                <directory>src/main/resources/spring</directory>
+                <filtering>true</filtering>
+                <includes>
+                	<include>application-context.xml</include>
+                </includes>
+            </resource>
         </resources>
     <plugins>
     	 <plugin>
@@ -278,6 +287,47 @@
 		            <encoding>UTF-8</encoding>  
 		        </configuration>  
 		    </plugin>  
+		    <!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
+		    <!--2/2:要使用com.alibaba.dubbo.container.Main来作为服务的容器，需要以下配置 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<classesDirectory>target/classes/</classesDirectory>
+					<archive>
+						<manifest>
+							<mainClass>com.alibaba.dubbo.container.Main</mainClass>
+							<!-- 打包时 MANIFEST.MF文件不记录的时间戳版本 -->
+							<useUniqueVersions>false</useUniqueVersions>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+						<manifestEntries>
+							<Class-Path>.</Class-Path>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<type>jar</type>
+							<includeTypes>jar</includeTypes>
+							<outputDirectory>
+								${project.build.directory}/lib
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
     </plugins>
   </build>
 </project>
